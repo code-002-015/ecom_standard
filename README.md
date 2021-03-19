@@ -4,7 +4,7 @@
 
 APP_NAME="Webfocus"
 APP_ENV=local
-APP_KEY=base64:2+0Z1vjBvupKGDAqwvx9fEZIwgO3bdnZ2NJwjx2aWYE=
+APP_KEY=base64:/MmgveHmgOgNklRrmrjsxyMntWDu5sBRHvWIvZtHRbo=
 APP_DEBUG=true
 APP_URL=http://localhost:8000
 APP_PANEL="admin-panel"
@@ -76,3 +76,4 @@ PUSHER_APP_CLUSTER=mt1
 
 MIX_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
 MIX_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+
