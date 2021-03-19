@@ -32,7 +32,7 @@ class SettingSeeder extends Seeder
             'tel_no' => '(044) 795-1234',
             'email' => 'support@webfocus.ph',
             'social_media_accounts' => '',
-            'copyright' => '2019-2020',
+            'copyright' => '2020-2021',
             'user_id' => '1',
 
         ];

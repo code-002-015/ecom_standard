@@ -13,8 +13,8 @@ class ProductTagSeeder extends Seeder
     {
         $faker = \Faker\Factory::create();
 
-        for($i=0; $i<=8; $i++){
-            for($x=1;$x<=8;$x++){
+        for($i=0; $i<=20; $i++){
+            for($x=1;$x<=20;$x++){
                 DB::table('product_tags')
                     ->insert([
                         'product_id' => $i,

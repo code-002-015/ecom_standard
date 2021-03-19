@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             ProductCategorySeeder::class,
-            ProductPhotoSeeder::class,
+            //ProductPhotoSeeder::class,
             ProductSeeder::class,
             ProductTagSeeder::class,
         ]);
@@ -63,7 +63,7 @@ class DatabaseSeeder extends Seeder
                 'phone' => '022646545',
                 'address_street' => 'Maharlika St',
                 'address_city' => 'Pasay',
-                'address_province' => 'NCR',
+                // 'address_province' => 'NCR',
                 'address_zip' => '1234'
             ],
             [
@@ -83,7 +83,7 @@ class DatabaseSeeder extends Seeder
                 'phone' => '022646545',
                 'address_street' => 'Maharlika St',
                 'address_city' => 'Pasay',
-                'address_province' => 'NCR',
+                // 'address_province' => 'NCR',
                 'address_zip' => '1234'
             ],
             [
@@ -103,10 +103,12 @@ class DatabaseSeeder extends Seeder
                 'phone' => '022646545',
                 'address_street' => 'Maharlika St',
                 'address_city' => 'Pasay',
-                'address_province' => 'NCR',
+                // 'address_province' => 'NCR',
                 'address_zip' => '1234'
             ]
         ];
+
+        DB::table('users')->insert($users);
 
     }
 }

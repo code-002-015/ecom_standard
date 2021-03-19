@@ -116,7 +116,7 @@
                 <!-- RD Navbar Brand -->
                 <div class="rd-navbar-brand">
                     <a href="{{route('home')}}" class="brand-name">
-                        <img src="{{ asset('storage').'/logos/'.Setting::getFaviconLogo()->company_logo }}" alt="Sysu" />
+                        <img src="{{ asset('storage').'/logos/'.Setting::getFaviconLogo()->company_logo }}" alt="{{ env('COMPANY_NAME') }}" />
                     </a>
                 </div>
                 <div class="rd-navbar-top-panel__content"> <!--desktop shopping icons-->

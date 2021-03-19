@@ -16,32 +16,32 @@ class ProductCategorySeeder extends Seeder
         $categories = [
             [
                 'parent_id' => '0',
-                'name' => 'Herbs & Spices',
-                'slug' => 'herbs-&-spices',
+                'name' => 'Category 1',
+                'slug' => 'category-1',
                 'description' => '',
                 'status' => 'PUBLISHED',
                 'created_by' => 1
             ],
             [
                 'parent_id' => '0',
-                'name' => 'Seasoning Blends',
-                'slug' => 'seasoning-blends',
+                'name' => 'Category 2',
+                'slug' => 'category-2',
                 'description' => '',
                 'status' => 'PUBLISHED',
                 'created_by' => 1
             ],
             [
                 'parent_id' => '0',
-                'name' => 'Baking',
-                'slug' => 'baking',
+                'name' => 'Category 3',
+                'slug' => 'category-3',
                 'description' => '',
                 'status' => 'PUBLISHED',
                 'created_by' => 1
             ],
             [
                 'parent_id' => '0',
-                'name' => 'Recipe Mix',
-                'slug' => 'recipe-mix',
+                'name' => 'Category 4',
+                'slug' => 'category-4',
                 'description' => '',
                 'status' => 'PUBLISHED',
                 'created_by' => 1

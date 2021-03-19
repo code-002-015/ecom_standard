@@ -309,8 +309,6 @@ class ProductPhotoSeeder extends Seeder
                 'is_primary' => '0',
                 'created_by' => 1
             ]
-            
-
         ];
 
         DB::table('product_photos')->insert($products_photos);

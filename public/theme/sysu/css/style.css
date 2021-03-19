@@ -2232,7 +2232,7 @@ form.filters {
     padding: 0;
     line-height: 20px;
     height: 65px;
-    white-space: pre-wrap;
+    /*white-space: pre-wrap;*/
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
@@ -2713,7 +2713,8 @@ form.filters {
   position: absolute;
   top: -4px;
   right: -39px;
-  transform: translate(-50%); }
+  transform: translate(-50%); 
+  z-index: 9;}
 
 .input-group.search-group {
   height: 50px;

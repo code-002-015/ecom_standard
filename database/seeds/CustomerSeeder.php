@@ -20,10 +20,10 @@ class CustomerSeeder extends Seeder
     {
         $users = [            
             [
-                'name' => 'user1',
-                'firstname' => 'user1',
-                'lastname' => 'user1',
-                'email' => 'user1@gmail.com',
+                'name' => 'customer 1',
+                'firstname' => 'customer1',
+                'lastname' => 'customer1',
+                'email' => 'customer1@gmail.com',
                 'email_verified_at' => now(),
                 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
                 'remember_token' => Str::random(10),
@@ -40,10 +40,10 @@ class CustomerSeeder extends Seeder
                 'address_zip' => '1234'
             ],
             [
-                'name' => 'user2',
-                'firstname' => 'user2',
-                'lastname' => 'user2',
-                'email' => 'user2@gmail.com',
+                'name' => 'customer 2',
+                'firstname' => 'customer2',
+                'lastname' => 'customer2',
+                'email' => 'customer2@gmail.com',
                 'email_verified_at' => now(),
                 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
                 'remember_token' => Str::random(10),

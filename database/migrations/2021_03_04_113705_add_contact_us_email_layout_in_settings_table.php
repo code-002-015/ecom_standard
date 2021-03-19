@@ -14,7 +14,7 @@ class AddContactUsEmailLayoutInSettingsTable extends Migration
     public function up()
     {
         Schema::table('settings', function (Blueprint $table) {
-            $table->text('contact_us_email_layout');
+            $table->text('contact_us_email_layout')->nullable();
         });
 
         $contactUsEmailContent = '<style>

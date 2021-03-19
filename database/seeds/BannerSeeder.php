@@ -14,7 +14,7 @@ class BannerSeeder extends Seeder
         \App\Banner::insert([
             [
                 'album_id' => 1,
-                'image_path' => \URL::to('/').'/theme/artemissalt/images/banners/banner1.jpg',
+                'image_path' => \URL::to('/').'/theme/'.env('THEME_FOLDER').'/images/banners/banner1.jpg',
                 'title' => 'Lorem ipsum1',
                 'description' => 'Lorem ipsum1 Lorem ipsum1 Lorem ipsum1 Lorem ipsum1',
                 'alt' => 'Banner 1',
@@ -26,7 +26,7 @@ class BannerSeeder extends Seeder
             ],
             [
                 'album_id' => 1,
-                'image_path' => \URL::to('/').'/theme/artemissalt/images/banners/banner2.jpg',
+                'image_path' => \URL::to('/').'/theme/'.env('THEME_FOLDER').'/images/banners/banner2.jpg',
                 'title' => 'Lorem ipsum2',
                 'description' => 'Lorem ipsum2 Lorem ipsum2 Lorem ipsum2 Lorem ipsum2',
                 'alt' => 'Banner 2',
@@ -38,7 +38,7 @@ class BannerSeeder extends Seeder
             ],
             [
                 'album_id' => 1,
-                'image_path' => \URL::to('/').'/theme/artemissalt/images/banners/banner1.jpg',
+                'image_path' => \URL::to('/').'/theme/'.env('THEME_FOLDER').'/images/banners/banner1.jpg',
                 'title' => 'Lorem ipsum3',
                 'description' => 'Lorem ipsum3 Lorem ipsum3 Lorem ipsum3 Lorem ipsum3',
                 'alt' => 'Banner 3',
@@ -50,7 +50,7 @@ class BannerSeeder extends Seeder
             ],
             [
                 'album_id' => 2,
-                'image_path' => \URL::to('/').'/theme/artemissalt/images/banners/sub/image1.jpg',
+                'image_path' => \URL::to('/').'/theme/'.env('THEME_FOLDER').'/images/banners/sub/image1.jpg',
                 'title' => null,
                 'description' => null,
                 'alt' => null,
@@ -62,7 +62,7 @@ class BannerSeeder extends Seeder
             ],
             [
                 'album_id' => 2,
-                'image_path' => \URL::to('/').'/theme/artemissalt/images/banners/sub/image1.jpg',
+                'image_path' => \URL::to('/').'/theme/'.env('THEME_FOLDER').'/images/banners/sub/image1.jpg',
                 'title' => null,
                 'description' => null,
                 'alt' => null,
@@ -74,7 +74,7 @@ class BannerSeeder extends Seeder
             ],
             [
                 'album_id' => 2,
-                'image_path' => \URL::to('/').'/theme/artemissalt/images/banners/sub/image1.jpg',
+                'image_path' => \URL::to('/').'/theme/'.env('THEME_FOLDER').'/images/banners/sub/image1.jpg',
                 'title' => null,
                 'description' => null,
                 'alt' => null,

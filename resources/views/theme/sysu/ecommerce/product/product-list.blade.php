@@ -273,7 +273,7 @@
                                                     </div>
                                                     <div class="gap-20"></div>
                                                     <p class="product-title px-3">
-                                                    {{ $product->name }}                                                    
+                                                    {{ $product->name }}                                                   
                                                     </p>
                                                 </a>
                                                 <div class="info position-relative">
