@@ -2,23 +2,30 @@
 
 namespace App\Http\Controllers\Settings;
 
-use App\Helpers\ListingHelper;
-use App\Http\Requests\UserRequest;
-use App\Mail\AddNewUserMail;
-use App\Permission;
+use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Input;
+
 use App\Http\Controllers\Controller;
+
+use Facades\App\Helpers\ListingHelper;
 use App\Helpers\Webfocus\Setting;
+
+
+use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
 use App\Http\Requests;
-use Auth;
 
 use App\Mail\UpdatePasswordMail;
+use App\Mail\AddNewUserMail;
+
+use App\Permission;
 use App\Role;
 use App\User;
 use App\Logs;
-use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
-use Illuminate\Support\Facades\Validator;
+
+use Auth;
+
 
 class CustomerController extends Controller
 {
@@ -31,30 +38,15 @@ class CustomerController extends Controller
         Permission::module_init($this, 'customer');
     }
 
-    public function index($param = null)
+    public function index()
     {   
-        $customConditions = [
-            [
-                'field' => 'is_active',
-                'operator' => '=',
-                'value' => 1,
-                'apply_to_deleted_data' => false
-            ],
-            [
-                'field' => 'role_id',
-                'operator' => '=',
-                'value' => 6,
-                'apply_to_deleted_data' => true
-            ]
-        ];
-
-        $listing = new ListingHelper('desc', 10, 'updated_at', $customConditions);
+        $listing = ListingHelper::required_condition('is_active', '=', 1);
+        $listing->required_condition('role_id', '=', 6);
 
         $users = $listing->simple_search(User::class, $this->searchFields);
 
         // Simple search init data
-        $filter = $listing->get_filter($this->searchFields);
-
+        $filter = ListingHelper::get_filter($this->searchFields);
         $searchType = 'simple_search';
 
         return view('admin.customers.index',compact('users','filter', 'searchType'));

@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers\EcommerceControllers;
 
-use App\EcommerceModel\Wishlist;
-use App\EcommerceModel\CustomerWishlist;
-use App\EcommerceModel\Cart;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\Helpers\ListingHelper;
+use Facades\App\Helpers\ListingHelper;
+
+use App\EcommerceModel\CustomerWishlist;
+use App\EcommerceModel\Wishlist;
+use App\EcommerceModel\Product;
+use App\EcommerceModel\Cart;
 use App\Page;
+
 use Auth;
 
-use App\EcommerceModel\Product;
 
 class WishlistController extends Controller
 {
@@ -24,10 +26,9 @@ class WishlistController extends Controller
      */
     public function index()
     {
-        $listing = new ListingHelper('desc', 10, 'updated_at');
+        $products = ListingHelper::simple_search(Wishlist::class, $this->searchFields);
 
-        $products = $listing->simple_search(Wishlist::class, $this->searchFields);
-        $filter = $listing->get_filter($this->searchFields);
+        $filter = ListingHelper::get_filter($this->searchFields);
         $searchType = 'simple_search';
 
         return view('admin.product-wishlist.index',compact('products', 'filter','searchType'));

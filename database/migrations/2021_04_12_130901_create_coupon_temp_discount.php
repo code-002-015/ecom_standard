@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddReorderQtyToTable extends Migration
+class CreateCouponTempDiscount extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddReorderQtyToTable extends Migration
      */
     public function up()
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->decimal('reorder_point',16,2)->default(0.00);
+        Schema::create('coupon_cart_temp_discount', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->integer('customer_id');
+            $table->decimal('coupon_discount',16,2);
         });
     }
 
@@ -25,8 +27,6 @@ class AddReorderQtyToTable extends Migration
      */
     public function down()
     {
-        Schema::table('products', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('coupon_cart_temp_discount');
     }
 }

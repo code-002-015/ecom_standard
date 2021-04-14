@@ -219,7 +219,7 @@
 							<div class="col-6">
 								<div class="custom-control custom-radio">
 									<input type="radio" id="same-product" name="product_discount" class="custom-control-input" value="current" onchange="productdiscount('current')" @if($coupon->product_discount == 'current') checked @endif>
-									<label class="custom-control-label" for="same-product">Current Product</label>
+									<label class="custom-control-label" for="same-product">Same Product</label>
 								</div>
 							</div>
 							<!-- <div class="col-4">
@@ -449,9 +449,7 @@
 							</div>
 							<div class="col-md-6" id="total-quantity-select" style="display:@if(isset($coupon->purchase_qty)) block @else none @endif;">
 								<select class="custom-select" name="qty_opt" id="qty_opt">
-									<option value="">Choose One</option>
-									<option @if($coupon->purchase_qty_type == 'min') selected @endif value="min">Minimum</option>
-									<option @if($coupon->purchase_qty_type == 'max') selected @endif value="max">Maximum</option>
+									<option value="min">Minimum</option>
 								</select>
 								<small id="spanQtyOpt" style="display: none;" class="text-danger"></small>
 							</div>

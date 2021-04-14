@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Cms4Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Permission;
 use Illuminate\Http\Request;
+
+use App\Permission;
 
 class FileManagerController extends Controller
 {

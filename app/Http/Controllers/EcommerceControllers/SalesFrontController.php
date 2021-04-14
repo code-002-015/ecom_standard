@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\EcommerceControllers;
 
-use App\EcommerceModel\SalesHeader;
-use App\EcommerceModel\SalesDetail;
-use App\EcommerceModel\Cart;
-use App\EcommerceModel\Product;
-
-use App\Page;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+
+use App\EcommerceModel\SalesHeader;
+use App\EcommerceModel\SalesDetail;
+use App\EcommerceModel\Product;
+use App\EcommerceModel\Cart;
+use App\Page;
 
 
 class SalesFrontController extends Controller

@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+use Facades\App\Helpers\ListingHelper;
+
 use App\Deliverablecities;
 use App\Permission;
-use Auth;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
-use App\Helpers\ListingHelper;
+use Auth;
+
 
 class DeliverablecitiesController extends Controller
 {
@@ -24,14 +27,12 @@ class DeliverablecitiesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($param = null)
+    public function index()
     {
-        $listing = new ListingHelper('desc', 10, 'updated_at');
-
-        $address = $listing->simple_search(Deliverablecities::class, $this->searchFields);
+        $address = ListingHelper::simple_search(Deliverablecities::class, $this->searchFields);
 
         // Simple search init data
-        $filter = $listing->get_filter($this->searchFields);
+        $filter =ListingHelper::get_filter($this->searchFields);
         $searchType = 'simple_search';
 
         return view('admin.deliverablelocations.index',compact('address', 'filter', 'searchType'));

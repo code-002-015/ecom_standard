@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers\EcommerceControllers;
 
-
-use App\EcommerceModel\SalesDetail;
-use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\EcommerceModel\DeliveryStatus;
-use App\EcommerceModel\SalesHeader;
-use App\EcommerceModel\Product;
-use App\EcommerceModel\ProductCategory;
-use App\EcommerceModel\SalesPayment;
-use App\EcommerceModel\CouponSale;
-
 use Illuminate\Support\Facades\Validator;
-use App\Helpers\ListingHelper;
-use DB;
+
+use App\EcommerceModel\ProductCategory;
+use App\EcommerceModel\DeliveryStatus;
+use App\EcommerceModel\SalesPayment;
+use App\EcommerceModel\SalesHeader;
+use App\EcommerceModel\SalesDetail;
+use App\EcommerceModel\CouponSale;
+use App\EcommerceModel\Product;
+use App\User;
+
 use Auth;
+use DB;
+
 
 
 class ReportsController extends Controller

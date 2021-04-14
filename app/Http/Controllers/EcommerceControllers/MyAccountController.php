@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\EcommerceControllers;
 
-use App\EcommerceModel\Cart;
-use App\EcommerceModel\SalesHeader;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+
+use App\EcommerceModel\SalesHeader;
+use App\EcommerceModel\Cart;
 use App\Page;
 
 class MyAccountController extends Controller

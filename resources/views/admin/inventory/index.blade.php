@@ -153,7 +153,7 @@ Manage Inventory
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" style="text-align: center;"> <p class="text-danger">No record found.</p></td>
+                                        <td colspan="6" style="text-align: center;"> <p class="text-danger">No record found.</p></td>
                                     </tr>
                                 @endforelse
 

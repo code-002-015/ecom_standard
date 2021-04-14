@@ -18,7 +18,7 @@ class CreateEcommerceSalesHeadersTable extends Migration
             $table->bigInteger('user_id');
             $table->string('order_number', 250);
             $table->text('response_code')->nullable();
-            $table->string('order_source',250);
+            $table->string('order_source',250)->nullable();
             $table->string('customer_name',250);
             $table->string('customer_contact_number',250);
             $table->text('customer_address');
@@ -33,7 +33,8 @@ class CreateEcommerceSalesHeadersTable extends Migration
             $table->decimal('net_amount',16,4)->default(0);
             $table->decimal('discount_amount',16,4)->default(0);
             $table->string('payment_status',250);            
-            $table->string('status', 100);  
+            $table->string('status', 100);
+            $table->text('other_instruction')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

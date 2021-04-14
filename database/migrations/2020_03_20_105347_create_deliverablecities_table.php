@@ -17,8 +17,10 @@ class CreateDeliverablecitiesTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->decimal('rate',16,2)->default(0);
+            $table->string('status')->default('PRIVATE');
             $table->integer('user_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -2,19 +2,27 @@
 
 namespace App\Http\Controllers\Product;
 
-use App\Http\Controllers\Controller;
-use App\Helpers\ListingHelper;
-use App\Http\Requests\ProductRequest;
-use App\Permission;
 use Illuminate\Http\Request;
-use Storage;
-use Auth;
+use App\Http\Controllers\Controller;
+
+use Facades\App\Helpers\ListingHelper;
+
+use App\Http\Requests\ProductRequest;
+use Illuminate\Support\Facades\Input;
+
+
 use App\EcommerceModel\ProductCategory;
 use App\EcommerceModel\ProductPhoto;
 use App\EcommerceModel\ProductTag;
 use App\EcommerceModel\Product;
+use App\Permission;
 use App\Page;
-use Illuminate\Support\Facades\Input;
+
+use Storage;
+use Auth;
+
+
+
 class ProductController extends Controller
 {
     private $searchFields = ['name'];
@@ -32,28 +40,17 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $customConditions = [
-            [
-                'field' => 'status',
-                'operator' => '!=',
-                'value' => 'UNEDITABLE',
-                'apply_to_deleted_data' => true
-            ]
-        ];
-
-        $listing = new ListingHelper( 'desc', 10, 'updated_at', $customConditions);
-
+        $listing = ListingHelper::required_condition('status', '!=', 'UNEDITABLE');
         $products = $listing->simple_search(Product::class, $this->searchFields);
 
         // Simple search init data
-        $filter = $listing->get_filter($this->searchFields);
+        $filter = ListingHelper::get_filter($this->searchFields);
+        $searchType = 'simple_search';
 
         $advanceSearchData = $listing->get_search_data($this->advanceSearchFields);
-        $uniqueProductByCategory = $listing->get_unique_item_by_column('App\EcommerceModel\Product', 'category_id');
-        $uniqueProductByBrand = $listing->get_unique_item_by_column('App\EcommerceModel\Product', 'brand');
-        $uniqueProductByUser = $listing->get_unique_item_by_column('App\EcommerceModel\Product', 'created_by');
-
-        $searchType = 'simple_search';
+        $uniqueProductByCategory = $listing->get_unique_item_by_column(Product::class, 'category_id');
+        $uniqueProductByBrand = $listing->get_unique_item_by_column(Product::class, 'brand');
+        $uniqueProductByUser = $listing->get_unique_item_by_column(Product::class, 'created_by');
 
         return view('admin.products.index',compact('products', 'filter', 'searchType','uniqueProductByCategory','uniqueProductByBrand','uniqueProductByUser','advanceSearchData'));
 

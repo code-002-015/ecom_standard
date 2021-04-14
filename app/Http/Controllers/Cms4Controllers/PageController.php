@@ -3,28 +3,34 @@
 namespace App\Http\Controllers\Cms4Controllers;
 
 use App\Http\Controllers\Controller;
-use App\EmailRecipient;
+
+use Illuminate\Support\Facades\Input;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
 use App\Http\Requests\PageContactUsRequest;
 use App\Http\Requests\PageCustomizeRequest;
-use App\Http\Requests\PageDefaultRequest;
-use Facades\App\Helpers\FileHelper;
-use App\Helpers\ModelHelper;
 use App\Http\Requests\PageStandardRequest;
-use Facades\App\Helpers\CMS4ListingHelper;
+use App\Http\Requests\PageDefaultRequest;
+use App\Http\Requests\PagePost;
+
+use Facades\App\Helpers\ListingHelper;
+use Facades\App\Helpers\FileHelper;
 use App\Helpers\Webfocus\Setting;
+use App\Helpers\ModelHelper;
+
+use App\EmailRecipient;
 use App\Permission;
+use App\Category;
+use App\Article;
+use App\Album;
 use App\Menu;
 use App\Page;
-use App\Album;
-use App\Article;
-use App\Category;
+
 use Response;
-use Auth;
 use Storage;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use App\Http\Requests\PagePost;
-use Illuminate\Support\Facades\Input;
+use Auth;
+
 
 class PageController extends Controller
 {
@@ -38,13 +44,13 @@ class PageController extends Controller
 
     public function index(Request $request)
     {
-        $pages = CMS4ListingHelper::simple_search(Page::class, $this->searchFields);
+        $pages = ListingHelper::simple_search(Page::class, $this->searchFields);
 
-        $filter = CMS4ListingHelper::get_filter($this->searchFields);
+        $filter = ListingHelper::get_filter($this->searchFields);
 
-        $advanceSearchData = CMS4ListingHelper::get_search_data($this->advanceSearchFields);
-        $uniquePagesByAlbum = CMS4ListingHelper::get_unique_item_by_column(Page::class, 'album_id');
-        $uniquePagesByUser = CMS4ListingHelper::get_unique_item_by_column(Page::class, 'user_id');
+        $advanceSearchData = ListingHelper::get_search_data($this->advanceSearchFields);
+        $uniquePagesByAlbum = ListingHelper::get_unique_item_by_column(Page::class, 'album_id');
+        $uniquePagesByUser = ListingHelper::get_unique_item_by_column(Page::class, 'user_id');
 
         $searchType = 'simple_search';
 
@@ -55,14 +61,14 @@ class PageController extends Controller
     {
         $equalQueryFields = ['album_id', 'status', 'user_id'];
 
-        $pages = CMS4ListingHelper::advance_search(Page::class, $this->advanceSearchFields, $equalQueryFields);
+        $pages = ListingHelper::advance_search(Page::class, $this->advanceSearchFields, $equalQueryFields);
 
-        $filter = CMS4ListingHelper::get_filter($this->searchFields);
+        $filter = ListingHelper::get_filter($this->searchFields);
 
-        $advanceSearchData = CMS4ListingHelper::get_search_data($this->advanceSearchFields);
-        $uniquePagesByParent = CMS4ListingHelper::get_unique_item_by_column(Page::class, 'parent_id');
-        $uniquePagesByAlbum = CMS4ListingHelper::get_unique_item_by_column(Page::class, 'album_id');
-        $uniquePagesByUser = CMS4ListingHelper::get_unique_item_by_column(Page::class, 'parent_page_id');
+        $advanceSearchData = ListingHelper::get_search_data($this->advanceSearchFields);
+        $uniquePagesByParent = ListingHelper::get_unique_item_by_column(Page::class, 'parent_id');
+        $uniquePagesByAlbum = ListingHelper::get_unique_item_by_column(Page::class, 'album_id');
+        $uniquePagesByUser = ListingHelper::get_unique_item_by_column(Page::class, 'parent_page_id');
 
         $searchType = 'advance_search';
 

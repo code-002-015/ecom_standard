@@ -2,17 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ListingHelper;
-use App\Helpers\Webfocus\Setting;
+use Illuminate\Http\Request;
+
+use Facades\App\Helpers\ListingHelper;
+
 use App\Http\Requests\ContactUsRequest;
+use App\Helpers\Webfocus\Setting;
+
+use Illuminate\Support\Facades\Mail;
 use App\Mail\InquiryAdminMail;
 use App\Mail\InquiryMail;
+
+use App\Article;
 use App\Page;
 use App\User;
+
 use Auth;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Http\Request;
-use App\Article;
+
+
+
 
 class FrontController extends Controller
 {
@@ -37,11 +45,11 @@ class FrontController extends Controller
     public function search(Request $request)
     {
         $searchFields = ['name', 'label', 'contents'];
-        $listing = new ListingHelper();
 
-        $searchPages = $listing->simple_search(Page::class, $searchFields);
+        $searchPages = ListingHelper::simple_search(Page::class, $searchFields);
 
-        $filter = $listing->get_filter($searchFields);
+
+        $filter = ListingHelper::get_filter($searchFields);
 
         $page = new Page();
         $page->name = 'Search';

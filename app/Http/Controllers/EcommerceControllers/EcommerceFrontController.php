@@ -2,21 +2,28 @@
 
 namespace App\Http\Controllers\EcommerceControllers;
 
-use App\Helpers\Webfocus\Setting;
-use App\Mail\UpdatePasswordMail;
-use App\Page;
-use App\User;
-use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
+use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Auth\Events\PasswordReset;
+
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+
+use App\Helpers\Webfocus\Setting;
 use Illuminate\Validation\Rule;
+
+
+use App\Mail\UpdatePasswordMail;
+
+use App\Page;
+use App\User;
+
 
 class EcommerceFrontController extends Controller
 {

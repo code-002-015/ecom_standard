@@ -5,11 +5,12 @@ namespace App\Http\Controllers\EcommerceControllers;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Helpers\ListingHelper;
 
-use App\EcommerceModel\Product;
+use Facades\App\Helpers\ListingHelper;
+
 use App\EcommerceModel\ProductCategory;
 use App\EcommerceModel\PromoProducts;
+use App\EcommerceModel\Product;
 use App\EcommerceModel\Promo;
 
 use Auth;
@@ -23,24 +24,14 @@ class PromoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($param = null)
+    public function index()
     {
         
-        $customConditions = [
-            [
-                'field' => 'is_expire',
-                'operator' => '=',
-                'value' => 0,
-                'apply_to_deleted_data' => false
-            ]
-        ];
-
-        $listing = new ListingHelper('desc', 10, 'updated_at', $customConditions);
-
-        $promos = $listing->simple_search(Promo::class, $this->searchFields);
+        $listing = ListingHelper::required_condition('is_expire', '=', 0);
+        $promos  = $listing->simple_search(Promo::class, $this->searchFields);
 
         // Simple search init data
-        $filter = $listing->get_filter($this->searchFields);
+        $filter = ListingHelper::get_filter($this->searchFields);
         $searchType = 'simple_search';
 
         return view('admin.promos.index',compact('promos', 'filter', 'searchType'));

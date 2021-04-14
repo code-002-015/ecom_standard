@@ -1,12 +1,16 @@
 <?php
 
 namespace App\Http\Controllers\Settings;
-use App\Helpers\ListingHelper;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Auth;
 
+use Facades\App\Helpers\ListingHelper;
+
+use App\Permission;
 use App\Role;
+
+use Auth;
 
 class RoleController extends Controller
 {
@@ -19,25 +23,12 @@ class RoleController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('checkPermission:admin/role', ['only' => ['index']]);
-        $this->middleware('checkPermission:admin/role/create', ['only' => ['create','store']]);
-        $this->middleware('checkPermission:admin/role/edit', ['only' => ['show','edit','update']]);
-        $this->middleware('checkPermission:admin/role/delete', ['only' => ['destroy']]);
+        Permission::module_init($this, 'role');
     }
 
     public function index()
     {
-        $customConditions = [
-            [
-                'field' => 'id',
-                'operator' => '>',
-                'value' => 1,
-                'apply_to_deleted_data' => true
-            ]
-        ];
-
-        $listing = new ListingHelper('desc', 10, 'updated_at', $customConditions);
-
+        $listing = ListingHelper::required_condition('id', '>', 1);
         $roles = $listing->simple_search(Role::class, $this->searchFields);
 
         // Simple search init data

@@ -138,9 +138,9 @@
                                 <div class="list-group">
                                     @forelse($logs as $log)
                                         <p class="list-group-item list-group-item-action">
-        {{--                                    <a href="{{route('settings.audit')}}?search={{$log->id}}" target="_blank">--}}
-                                            <span class="badge badge-dark">{{ ucwords($log->firstname) }} {{ ucwords($log->lastname) }}</span>
-        {{--                                    </a> --}}
+                                            {{--<a href="{{route('settings.audit')}}?search={{$log->id}}" target="_blank">--}}
+                                            <span class="badge badge-dark">{{ ucwords($log->admin->firstname) }} {{ ucwords($log->admin->lastname) }}</span>
+                                            {{--</a> --}}
                                             {{ $log->dashboard_activity }} at {{ Setting::date_for_listing($log->activity_date) }}
                                         </p>
                                     @empty

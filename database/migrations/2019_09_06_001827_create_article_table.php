@@ -24,6 +24,7 @@ class CreateArticleTable extends Migration
             $table->string('status', 150)->default('draft');
             $table->string('is_featured', 150)->default('0');
             $table->text('image_url')->nullable();
+            $table->text('thumbnail_url')->nullable();
             $table->string('meta_title', 150)->nullable();
             $table->string('meta_keyword', 150)->nullable();
             $table->text('meta_description')->nullable();

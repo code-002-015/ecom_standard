@@ -2,30 +2,34 @@
 
 namespace App\Http\Controllers\EcommerceControllers;
 
-use App\EcommerceModel\Cart;
-use App\Mail\SalesCompleted;
-use Illuminate\Support\Facades\Mail;
-use App\EcommerceModel\SalesPayment;
-use App\EcommerceModel\SalesHeader;
-use App\EcommerceModel\SalesDetail;
-use App\Helpers\Webfocus\Setting;
-use App\EcommerceModel\Product;
-use App\EcommerceModel\Coupon;
-use App\EcommerceModel\CustomerCoupon;
-use App\EcommerceModel\CouponCart;
-use App\EcommerceModel\CouponSale;
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
-use App\PaynamicsLog;
+
+use App\Mail\SalesCompleted;
+use Illuminate\Support\Facades\Mail;
+
 use App\Helpers\PaynamicsHelper;
+
+use App\EcommerceModel\CouponCartDiscount;
+use App\EcommerceModel\CustomerCoupon;
+use App\EcommerceModel\SalesPayment;
+use App\EcommerceModel\SalesHeader;
+use App\EcommerceModel\SalesDetail;
+use App\EcommerceModel\CouponCart;
+use App\EcommerceModel\CouponSale;
+use App\Helpers\Webfocus\Setting;
+use App\EcommerceModel\Product;
+use App\EcommerceModel\Coupon;
+use App\EcommerceModel\Cart;
+use App\PaynamicsLog;
 use App\Page;
-use Auth;
+
+
+use Carbon\Carbon;
 use Redirect;
 use DateTime;
-use Carbon\Carbon;
-
+use Auth;
 use DB;
 
 
@@ -161,9 +165,25 @@ class CartController extends Controller
             if (Cart::where('user_id', auth()->id())->count() == 0) {
                 return;
             }
-            $upd = Cart::where('product_id',$request->record_id)->where('user_id', auth()->id())->update([
+            $upd = Cart::where('product_id',$request->record_id)->where('user_id', auth()->id());
+
+            $upd->update([
                 'qty' => $request->quantity
             ]);
+
+            $cart_qty = $upd->first();
+
+            $price_before = $cart_qty->product->price*$cart_qty->qty;
+
+
+            $carts = Cart::where('user_id', auth()->id())->get();
+            $total_promo_discount = 0;
+            $subtotal = 0;
+            foreach($carts as $cart){
+                $promo_discount = $cart->product->price-$cart->product->discountedprice;
+                $total_promo_discount += $promo_discount*$cart->qty;
+                $subtotal += $cart->product->price*$cart->qty;
+            }
         } else {
             $cart = session('cart', []);
                 foreach ($cart as $key => $order) {
@@ -176,7 +196,11 @@ class CartController extends Controller
         }
 
         return response()->json([
-            'success' => true               
+            'success' => true,
+            'total_promo_discount' => $total_promo_discount,
+            'subtotal' => $subtotal,
+            'recordid' => $request->record_id,
+            'price_before' => $price_before        
         ]);
     }
 
@@ -194,11 +218,12 @@ class CartController extends Controller
               
             }
 
-            $refreshCustomerCouponCart = CouponCart::where('customer_id',Auth::id())->delete();
+            CouponCart::where('customer_id',Auth::id())->delete();
             if($request->coupon_counter > 0){
                 $data = $request->all();
                 $coupons = $data['couponid'];
                 $product = $data['coupon_productid'];
+                $usage = $data['couponUsage'];
 
                 foreach($coupons as $key => $c){
                     $coupon = Coupon::find($c);
@@ -207,12 +232,19 @@ class CartController extends Controller
                         CouponCart::create([
                             'coupon_id' => $coupon->id,
                             'product_id' => $product[$key] == 0 ? NULL : $product[$key],
-                            'customer_id' => Auth::id()
+                            'customer_id' => Auth::id(),
+                            'total_usage' => $usage[$key]
                         ]);
                     }
                 }
             }
-            
+
+            CouponCartDiscount::where('customer_id',Auth::id())->delete();
+            CouponCartDiscount::create([
+                'customer_id' => Auth::id(),
+                'coupon_discount' => $request->coupon_total_discount
+            ]);
+
             return redirect()->route('cart.front.checkout');
         } else {
             $cart = session('cart', []);
@@ -273,11 +305,14 @@ class CartController extends Controller
         $customer_delivery_adress = $request->delivery_address ?? ' ';
         $customer_name = Auth::user()->fullName;
         $customer_contact_number =  $request->mobile ?? Auth::user()->mobile;
-           
+        
+        $coupon_total_discount = number_format($request->coupon_total_discount,2,'.','');
+
         $totalPrice = $request->total_amount;
         $requestId = $this->next_order_number();  
         $member = Auth::user();
-              
+
+
         $salesHeader = SalesHeader::create([
             'user_id' => auth()->id(),
             'order_number' => $requestId,
@@ -286,38 +321,39 @@ class CartController extends Controller
             'customer_address' => $customer_delivery_adress,
             'customer_delivery_adress' => $customer_delivery_adress,
             'delivery_tracking_number' => ' ',
-            'delivery_fee_amount' => $request->delivery_fee,
+            'delivery_fee_amount' => number_format($request->delivery_fee,2,'.',''),
             'other_instruction' => $request->instruction,
             'delivery_courier' => ' ',
             'delivery_type' => $request->shipping_type,
-            'gross_amount' => $totalPrice ,
+            'gross_amount' => number_format($totalPrice,2,'.','') ,
             'tax_amount' => 0,
-            'net_amount' => $totalPrice,
-            'discount_amount' => 0,
+            'net_amount' => number_format($totalPrice,2,'.',''),
+            'discount_amount' => $coupon_total_discount,
             'payment_status' => 'UNPAID',
             'delivery_status' => 'Waiting for Payment',
             'status' => 'active',
         ]);
      
+        $carts = Cart::where('user_id',Auth::id())->get();
+
         $grand_gross = 0;
         $grand_tax = 0;
 
         $coupon_code = 0;
         $coupon_amount = 0;
         $totalQty = 0;
-        $carts = Cart::where('user_id',Auth::id())->get();
         foreach ($carts as $cart) {
             
             $totalQty += $cart->qty;
 
             $product = $cart->product;
-            $gross_amount = ($product->price * $cart->qty) + ($cart->paella_price * $cart->qty);
+            $gross_amount = (number_format($product->discountedprice,2,'.','') * $cart->qty);
             $tax_amount = $gross_amount - ($gross_amount/1.12);
             $grand_gross += $gross_amount;
             $grand_tax += $tax_amount;
 
 
-            $data['price'] = $product->price;
+            $data['price'] = number_format($product->discountedprice,2,'.','');
             $data['tax'] = $data['price'] - ($data['price']/1.12);
             $data['other_cost'] = 0;
             $data['net_price'] = $data['price'] - ($data['tax'] + $data['other_cost']);
@@ -327,21 +363,19 @@ class CartController extends Controller
                 'product_id' => $product->id,
                 'product_name' => $product->name,
                 'product_category' => $product->category_id,
-                'price' => $product->price,              
-                'tax_amount' => $tax_amount,
+                'price' => number_format($product->discountedprice,2,'.',''),              
+                'tax_amount' => number_format($tax_amount,2,'.',''),
                 'promo_id' => 0,
                 'promo_description' => '',
                 'discount_amount' => 0,
-                'gross_amount' => $gross_amount,
-                'net_amount' => $gross_amount,
+                'gross_amount' => number_format($gross_amount,2,'.',''),
+                'net_amount' => number_format($gross_amount,2,'.',''),
                 'qty' => $cart->qty,             
                 'uom' => $product->uom,               
                 'created_by' => Auth::id()
             ]);
           
         }
-
-        Mail::to(Auth::user())->send(new SalesCompleted($salesHeader));  
       
         $urls = [
             'notification' => route('cart.payment-notification'),
@@ -363,7 +397,7 @@ class CartController extends Controller
             }
         }
 
-        $base64Code = PaynamicsHelper::payNow($requestId, Auth::user(), $carts, $totalPrice, $urls, false ,$request->delivery_fee);
+        $base64Code = PaynamicsHelper::payNow($requestId, Auth::user(), $carts, $totalPrice, $urls, false ,$request->delivery_fee, $coupon_total_discount);
 
         Cart::where('user_id', Auth::id())->delete();
         if($base64Code){
@@ -372,7 +406,7 @@ class CartController extends Controller
             }
         }
         
-        
+        Mail::to(Auth::user())->send(new SalesCompleted($salesHeader));  
         
         return view('theme.paynamics.sender', compact('base64Code'));
        
@@ -553,11 +587,27 @@ class CartController extends Controller
         $coupons = $data['couponid'];
         foreach($coupons as $c){
             $coupon = Coupon::find($c);
+
+            $cart = CouponCart::where('customer_id',Auth::id())->where('coupon_id',$coupon->id);
+
+            if($cart->exists()){
+                $ct = $cart->first();
+
+                if(isset($ct->product_id)){
+                    $productid = $ct->product_id;
+                } else {
+                    $productid = NULL;
+                }            
+            } else {
+                $productid = NULL;
+            }
+
             CouponSale::create([
                 'customer_id' => Auth::id(),
                 'coupon_id' => $c,
                 'coupon_code' => $coupon->coupon_code,
-                'sales_header_id' => $salesid
+                'sales_header_id' => $salesid,
+                'product_id' => $productid
             ]);   
         }
     }

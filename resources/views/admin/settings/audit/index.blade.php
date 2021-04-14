@@ -99,11 +99,11 @@
 							@forelse($logs as $log)
 								<tr>
 									<td>
-										<a href="{{ route('users.show', $log->created_by) }}"><strong>{{ ucwords($log->firstname) }} {{ ucwords($log->lastname) }}</strong></a>
+										<a href="{{ route('users.show', $log->log_by) }}"><strong>{{ ucwords($log->admin->fullname) }}</strong></a>
 									</td>
-									<td><span class="badge badge-primary">{{ $log->role_name }}</span></td>
-									<td>{{ \App\Logs::logType($log->activity_type) }}</td>
-									<td><a class="log_values" href="#modal-values" data-toggle="modal" data-new="{{$log->new_value}}" data-old="{{$log->old_value}}">{{ App\Logs::getLogs($log->activity_type,$log->id) }}</a></td>
+									<td><span class="badge badge-primary">{{ $log->admin->userRole($log->log_by) }}</span></td>
+									<td>{{ $log->activity_type }}</td>
+									<td><a class="log_values" href="#modal-values" data-toggle="modal" data-new="{{$log->new_value}}" data-old="{{$log->old_value}}">{{ $log->activity_desc }}</a></td>
 									<td>{{ str_limit($log->old_value, 30, $end ='...') }}</td>
 									<td>{{ str_limit($log->new_value, 30, $end ='...') }}</td>
                                     <td>{{ ucwords($log->db_table) }}</td>

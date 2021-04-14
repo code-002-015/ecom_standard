@@ -21,7 +21,11 @@ class CreateEcommerceSalesPaymentsTable extends Migration
             $table->string('status',100);
             $table->date('payment_date')->default(date('Y-m-d'));
             $table->string('receipt_number',150);
+            $table->text('remarks')->nullable();
             $table->integer('created_by');
+            $table->text('response_body')->nullable();
+            $table->string('response_id')->nullable();
+            $table->string('response_code')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

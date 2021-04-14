@@ -21,6 +21,7 @@ class CreatePromosTable extends Migration
             $table->integer('discount');
             $table->string('status');
             $table->integer('is_expire')->default(0);
+            $table->string('type')->nullable();
             $table->integer('user_id');
             $table->timestamps();
             $table->softDeletes();

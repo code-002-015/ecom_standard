@@ -51,7 +51,9 @@ class CreateCouponsTable extends Migration
             $table->string('usage_limit',150)->nullable();
             $table->integer('usage_limit_no')->nullable();
             $table->integer('combination')->nullable();
-            $table->integer('availability')->nullable();
+            $table->integer('availability')->default(0)->change();
+            $table->string('product_discount')->nullable();
+            $table->integer('discount_product_id')->nullable();
             $table->integer('user_id');
             $table->timestamps();
             $table->softDeletes();

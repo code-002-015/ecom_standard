@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers\EcommerceControllers;
 
-use App\EcommerceModel\GiftCertificate;
-use App\EcommerceModel\SalesDetail;
-use App\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\EcommerceModel\DeliveryStatus;
-use App\EcommerceModel\SalesHeader;
-use App\EcommerceModel\SalesPayment;
+
 use Illuminate\Support\Facades\Validator;
-use App\Helpers\ListingHelper;
+use Facades\App\Helpers\ListingHelper;
+
+use App\EcommerceModel\GiftCertificate;
+use App\EcommerceModel\DeliveryStatus;
+use App\EcommerceModel\SalesPayment;
+use App\EcommerceModel\SalesDetail;
+use App\EcommerceModel\SalesHeader;
+use App\Permission;
 use App\Page;
+
 use Auth;
 
 class SalesController extends Controller
@@ -27,17 +30,9 @@ class SalesController extends Controller
     public function index()
     {
 
-        $customConditions = [
-            [
-                'field' => 'status',
-                'operator' => '=',
-                'value' => 'active',
-                'apply_to_deleted_data' => true
-            ],
-        ];
+        $listing = ListingHelper::sort_by('order_number')
+        $listing->required_condition('status', '=', 'active');
 
-
-        $listing = new ListingHelper('desc',10,'order_number',$customConditions);
         //$sales = $listing->simple_search(SalesHeader::class, $this->searchFields);
 
         $sales = SalesHeader::where('id','>','0');

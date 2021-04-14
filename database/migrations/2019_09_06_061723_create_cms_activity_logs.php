@@ -15,7 +15,7 @@ class CreateCmsActivityLogs extends Migration
     {
         Schema::create('cms_activity_logs', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('created_by')->nullable();
+            $table->string('log_by')->nullable();
             $table->string('activity_type')->nullable();
             $table->string('dashboard_activity')->nullable();
             $table->text('activity_desc')->nullable();

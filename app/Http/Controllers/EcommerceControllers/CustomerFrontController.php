@@ -2,19 +2,24 @@
 
 namespace App\Http\Controllers\EcommerceControllers;
 
-use App\EcommerceModel\Cart;
-use App\EcommerceModel\Member;
-use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+
 use App\Helpers\Webfocus\Setting;
-use Illuminate\Validation\Rule;
-use Session;
-use App\Page;
+
 use App\EcommerceModel\Product;
+use App\EcommerceModel\Member;
+use App\EcommerceModel\Cart;
+use App\User;
+use App\Page;
+
+use Session;
 
 class CustomerFrontController extends Controller
 {

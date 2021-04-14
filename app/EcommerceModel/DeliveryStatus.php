@@ -4,6 +4,8 @@ namespace App\EcommerceModel;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\ActivityLog;
+
 class DeliveryStatus extends Model
 {
 
@@ -20,4 +22,35 @@ class DeliveryStatus extends Model
 	{
 	    return $this->belongsTo('App\EcommerceModel\SalesHeader','order_id');
 	}
+
+
+
+
+    // // ******** AUDIT LOG ******** //
+    // // Need to change every model
+    // static $oldModel;
+    // static $tableTitle = 'delivery status';
+    // static $name = 'name';
+    // // END Need to change every model
+
+    // public static function boot()
+    // {
+    //     parent::boot();
+
+    //     self::created(function($model) {
+    //         $name = $model[self::$name];
+
+    //         ActivityLog::create([
+    //             'log_by' => auth()->id(),
+    //             'activity_type' => 'update',
+    //             'dashboard_activity' => 'created a new '. self::$tableTitle,
+    //             'activity_desc' => 'created the '. self::$tableTitle .' '. $name,
+    //             'activity_date' => date("Y-m-d H:i:s"),
+    //             'db_table' => $model->getTable(),
+    //             'old_value' => '',
+    //             'new_value' => $name,
+    //             'reference' => $model->id
+    //         ]);
+    //     });
+    // }
 }

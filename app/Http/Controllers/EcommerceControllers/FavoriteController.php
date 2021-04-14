@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers\EcommerceControllers;
 
-use App\EcommerceModel\Favorite;
-use App\EcommerceModel\CustomerFavorite;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
-use App\Helpers\ListingHelper;
-use App\EcommerceModel\Cart;
+use Facades\App\Helpers\ListingHelper;
+
+use App\EcommerceModel\CustomerFavorite;
 use App\EcommerceModel\CustomerWishlist;
+use App\EcommerceModel\Favorite;
+use App\EcommerceModel\Product;
+use App\EcommerceModel\Cart;
 use App\Page;
+
 use Auth;
 
-use App\EcommerceModel\Product;
+
 
 class FavoriteController extends Controller
 {
@@ -25,10 +28,9 @@ class FavoriteController extends Controller
      */
     public function index()
     {
-        $listing = new ListingHelper('desc', 10, 'updated_at');
+        $products = ListingHelper::simple_search(Favorite::class, $this->searchFields);
 
-        $products = $listing->simple_search(Favorite::class, $this->searchFields);
-        $filter = $listing->get_filter($this->searchFields);
+        $filter = ListingHelper::get_filter($this->searchFields);
         $searchType = 'simple_search';
 
         return view('admin.product-favorite.index',compact('products', 'filter','searchType'));

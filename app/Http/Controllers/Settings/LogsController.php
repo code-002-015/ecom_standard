@@ -1,30 +1,32 @@
 <?php
 
 namespace App\Http\Controllers\Settings;
-use App\Http\Controllers\Controller;
-use App\Permission;
-use Illuminate\Http\Request;
-use App\Helpers\ListingHelper;
 
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+
+use Facades\App\Helpers\ListingHelper;
 use Illuminate\Support\Facades\Input;
-use App\Logs;
+
+use App\ActivityLog;
+use App\Permission;
 
 class LogsController extends Controller
 {
-    private $searchFields = ['db_table', 'firstname', 'lastname', 'activity_date','id'];
+    private $searchFields = ['db_table', 'activity_date',];
 
     public function __construct()
     {
         Permission::module_init($this, 'audit_logs');
     }
 
-    public function index(Request $request)
+    public function index()
     {
-        $listing = new ListingHelper('desc',10,'activity_date');
+        $listing = ListingHelper::sort_by('activity_date');
+        $logs = $listing->simple_search(ActivityLog::class, $this->searchFields);
 
-        $logs = $listing->simple_search(Logs::class, $this->searchFields);
-
-        $filter = $listing->get_filter($this->searchFields);
+        $filter = ListingHelper::get_filter($this->searchFields);
 
         $searchType = 'simple_search';
 

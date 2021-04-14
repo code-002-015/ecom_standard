@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ListingHelper;
+use Illuminate\Http\Request;
+
+use Facades\App\Helpers\ListingHelper;
 use App\Helpers\ModelHelper;
+
+use App\EcommerceModel\CustomerWishlist;
 use App\InventoryReceiverHeader;
 use App\InventoryReceiverDetail;
-use App\EcommerceModel\CustomerWishlist;
 use App\EcommerceModel\Product;
-use App\User;
 use App\Permission;
-use Illuminate\Http\Request;
+use App\User;
+
 use Response;
 use Auth;
 
@@ -25,13 +28,10 @@ class InventoryReceiverHeaderController extends Controller
 
     public function index()
     {
-        $listing = new ListingHelper();
-
-        $lists = $listing->simple_search(InventoryReceiverHeader::class, $this->searchFields);
+        $lists = ListingHelper::simple_search(InventoryReceiverHeader::class, $this->searchFields);
 
         // Simple search init data
-        $filter = $listing->get_filter($this->searchFields);
-
+        $filter = ListingHelper::get_filter($this->searchFields);
         $searchType = 'simple_search';
 
         return view('admin.inventory.index',compact('lists','filter', 'searchType'));

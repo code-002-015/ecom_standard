@@ -26,12 +26,15 @@ class CreateProductsTable extends Migration
             $table->string('weight')->nullable();
             $table->string('status',100);
             $table->string('uom',30)->default('PC');
+            $table->string('brand')->nullable();
             $table->boolean('is_featured')->default(false);
             $table->integer('created_by');
             $table->string('meta_title', 150)->nullable();
             $table->string('meta_keyword', 150)->nullable();
             $table->text('meta_description')->nullable();
             $table->string('code', 250)->nullable();
+            $table->text('zoom_image')->nullable();
+            $table->decimal('reorder_point',16,2)->default(0.00);
             $table->timestamps();
             $table->softDeletes();
         });

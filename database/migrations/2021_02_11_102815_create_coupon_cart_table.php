@@ -18,6 +18,7 @@ class CreateCouponCartTable extends Migration
             $table->integer('customer_id');
             $table->integer('product_id')->nullable();
             $table->integer('coupon_id');
+            $table->integer('total_usage')->default(0);
             $table->timestamps();
         });
     }

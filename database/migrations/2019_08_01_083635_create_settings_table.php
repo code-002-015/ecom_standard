@@ -37,6 +37,16 @@ class CreateSettingsTable extends Migration
             $table->text('social_media_accounts')->nullable();
             $table->string('copyright')->nullable();
             $table->integer('user_id')->nullable();
+            $table->integer('min_order')->default(0);
+            $table->integer('promo_is_displayed')->default(0);
+            $table->integer('review_is_allowed')->default(0);
+            $table->integer('pickup_is_allowed')->default(1);
+            $table->text('delivery_note')->nullable();
+            $table->integer('min_order_is_allowed')->default(1);
+            $table->integer('flatrate_is_allowed')->default(1);
+            $table->integer('delivery_collect_is_allowed')->default(1);
+            $table->text('accepted_payments')->nullable();
+            $table->integer('coupon_limit')->nullable()->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

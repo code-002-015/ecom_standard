@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers\EcommerceControllers;
 
-
-use App\EcommerceModel\Cart;
-use App\EcommerceModel\SalesDetail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use App\EcommerceModel\SalesHeader;
-use App\Page;
-use Auth;
-use App\Deliverablecities;
 
-use App\EcommerceModel\CouponCart;
+use Illuminate\Support\Facades\Validator;
+
+use App\EcommerceModel\CouponCartDiscount;
 use App\EcommerceModel\CustomerCoupon;
+use App\EcommerceModel\SalesHeader;
+use App\EcommerceModel\SalesDetail;
+use App\EcommerceModel\CouponCart;
 use App\EcommerceModel\Coupon;
+use App\EcommerceModel\Cart;
+use App\Deliverablecities;
+use App\Page;
+
+use Illuminate\Support\Facades\DB;
+use Auth;
 
 class CheckoutController extends Controller
 {
@@ -39,70 +41,49 @@ class CheckoutController extends Controller
         }
 
         $coupons = CouponCart::where('customer_id',Auth::id())->get();
-        $couponUsed = $coupons->count();
+        //$couponUsed = $coupons->count();
 
         $totalAmount = 0;
         $totalQty = 0;
-        $product_subtotal = 0;
+
+        $total_promo_discount = 0;
+        $subtotal = 0;
         foreach($products as $p){
+            // subtotal using the original product price
+            $subtotal += $p->product->price*$p->qty;
+
+            $product_discount = $p->product->price-$p->product->discountedprice;
+            $total_promo_discount += $product_discount*$p->qty;
+
             $totalQty += $p->qty;
+            // total amount using discounted price or promo price
             $totalAmount += $p->product->discountedprice*$p->qty;
-
-            $couponCart = CouponCart::where('customer_id',Auth::id())->where('product_id',$p->product_id);;
-
-            if($couponCart->count()){
-                $remainingQty = $p->qty-$couponCart->count();
-                $productsub = $p->product->discountedprice*$couponCart->count();
-                // get product subtotal of remaining qty
-
-                $product_subtotal += $p->product->discountedprice*$remainingQty;
-
-                // get total discount amount
-                $coupon = $couponCart->first();
-
-                if(isset($coupon->details->amount)){
-                    $product_subtotal += $productsub-($coupon->details->amount*$couponCart->count());
-                }   
-
-                if(isset($coupon->details->percentage)){
-                    $percent = $coupon->details->percentage/100;
-                    $discount = ($p->product->discountedprice*$percent)*$couponCart->count();
-                    
-                    $product_subtotal += $productsub-$discount;
-                    
-                }
-
-            } else {
-                $product_subtotal += $p->product->discountedprice*$p->qty;
-            }
         }
 
 
         // get total amount discount
         $totalAmountCoupons = CouponCart::where('customer_id',Auth::id())->whereNull('product_id')->get();
-        $amountDiscount = 0;
         $total_amount_discount_counter = 0;
         foreach($totalAmountCoupons as $c){
             $coupon = Coupon::find($c->coupon_id);
             if($coupon->amount_discount_type == 1){
                 $total_amount_discount_counter++;
-
-                if(isset($coupon->amount)){
-                    $amountDiscount += $coupon->amount;
-                }
-
-                if(isset($counpon->percentage)){
-                    $percent = $coupon->percentage/100;
-                    $discount = $product_subtotal*$percent;
-
-                    $amountDiscount += $discount;
-                }
             }
         }
 
-        $grandTotal = $product_subtotal-$amountDiscount;
 
-        return view('theme.'.env('FRONTEND_TEMPLATE').'.ecommerce.cart.checkout', compact('products','user','locations','page','coupons','totalAmount','totalQty','grandTotal','amountDiscount','product_subtotal','couponUsed','total_amount_discount_counter'));
+
+        $couponCart = CouponCartDiscount::where('customer_id',Auth::id());
+        if($couponCart->count() > 0){
+            $ccart = $couponCart->first();
+            $coupon_total_discount = $ccart->coupon_discount;
+        } else {
+            $coupon_total_discount = 0;
+        }
+
+        $grandTotal = $subtotal-$total_promo_discount-$coupon_total_discount;
+
+        return view('theme.'.env('FRONTEND_TEMPLATE').'.ecommerce.cart.checkout', compact('products','user','locations','page','coupons','totalAmount','totalQty','grandTotal','total_amount_discount_counter','total_promo_discount','subtotal','coupon_total_discount'));
     }
 
     public function remove_coupon($id)

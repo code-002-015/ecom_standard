@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Cms4Controllers;
 
-use Facades\App\Helpers\CMS4ListingHelper;
-use App\Helpers\ModelHelper;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+use Facades\App\Helpers\ListingHelper;
+use App\Helpers\ModelHelper;
+
 use App\ArticleCategory;
 use App\Permission;
-use Illuminate\Http\Request;
 
 class ArticleCategoryController extends Controller
 {
@@ -26,9 +28,9 @@ class ArticleCategoryController extends Controller
 
     public function index()
     {
-        $categories = CMS4ListingHelper::simple_search(ArticleCategory::class, $this->searchFields);
+        $categories = ListingHelper::simple_search(ArticleCategory::class, $this->searchFields);
 
-        $filter = CMS4ListingHelper::get_filter($this->searchFields);
+        $filter = ListingHelper::get_filter($this->searchFields);
 
         $searchType = 'simple_search';
 

@@ -3,21 +3,25 @@
 namespace App\Http\Controllers\Cms4Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Helpers\Webfocus\Setting;
-use App\Http\Requests\Front\ShareEmailRequest;
-use App\Mail\ShareNewsMail;
-use App\Page;
-use App\User;
-use App\Menu;
-use App\Article;
-use DB;
-use Illuminate\Support\Facades\Mail;
-use Response;
-use Auth;
-use Storage;
+
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Mail;
+
+use App\Http\Requests\Front\ShareEmailRequest;
+use App\Helpers\Webfocus\Setting;
+use App\Mail\ShareNewsMail;
+
+use App\Article;
+use App\Page;
+use App\User;
+use App\Menu;
+
+use Response;
+use Storage;
+use Auth;
+use DB;
 
 class ArticleFrontController extends Controller
 {

@@ -669,47 +669,70 @@
                         <table class="twelve columns">
                         <tr>
                             <td>
-                                <h4>Order Details</h4>
-                                                <span class="devider"></span>
+                            <h4>Order Details</h4>
+                            <span class="devider"></span>
                                 <table width="100%" style="font-size: 11px;">
-                                                      <tr>
-                                                          <td>Code</td>
-                                                          <td>Product</td>
-                                                          <td style="text-align:right">Qty</td>
-                                                          <td style="text-align:right">Price</td>
-                                                          <td style="text-align:right">Total</td>
-                                                      </tr>  
-                                                      <tr>
-                                                            <td colspan="5"></td>
-                                                      </tr>
-                                                      @php $x=0; @endphp
-                                                      @forelse($h->items as $i)
-                                                      @php $x+= ($i->qty * $i->price); @endphp
-                                                      <tr>
-                                                          <td>{{$i->product->code}}</td>
-                                                          <td>{{$i->product_name}}</td>
-                                                          <td style="text-align:right">{{$i->qty}}</td>
-                                                          <td style="text-align:right">Php {{number_format($i->price,2)}}</td>
-                                                          <td style="text-align:right">Php {{number_format(($i->qty * $i->price),2)}}</td>
-                                                      </tr>  
-                                                      @empty
-                                                      @endforelse
-                                                      <tr>
-                                                            <td colspan="5"><hr></td>
-                                                      </tr>  
-                                                      <tr>
-                                                            <td>Subtotal</td>
-                                                            <td colspan="4" style="text-align:right">Php {{number_format($x,2)}}</td>
-                                                      </tr>    
-                                                      <tr>
-                                                            <td>Delivery Fee</td>
-                                                            <td colspan="4" style="text-align:right">Php {{number_format($h->delivery_fee_amount,2)}}</td>
-                                                      </tr>                             
-                                                      <tr style="font-weight:bold;">
-                                                            <td>Total</td>
-                                                            <td colspan="4" style="text-align:right">Php {{number_format(($x + $h->delivery_fee_amount),2)}}</td>
-                                                      </tr>         
-                                                </table>
+                                    <tr>
+                                        <td>Product Code</td>
+                                        <td>Product Name</td>
+                                        <td style="text-align:right">Qty</td>
+                                        <td style="text-align:right">Price</td>
+                                        <td style="text-align:right">Total</td>
+                                    </tr>  
+                                    <tr>
+                                          <td colspan="5"></td>
+                                    </tr>
+                                    @php $subtotal = 0; @endphp
+
+                                    @forelse($h->items as $i)
+                                          @php
+                                                $subtotal += $i->price * $i->qty;
+                                          @endphp
+                                          <tr>
+                                                <td>{{$i->product->code}}</td>
+                                                <td>{{$i->product_name}}</td>
+                                                <td style="text-align:right">{{$i->qty}}</td>
+                                                <td style="text-align:right">Php {{number_format($i->price,2)}}</td>
+                                                <td style="text-align:right">Php {{number_format(($i->price*$i->qty),2)}}</td>
+                                          </tr>  
+                                          @empty
+                                    @endforelse
+
+                                    @php
+                                        $delivery_discount = \App\EcommerceModel\CouponSale::total_discount_delivery($h->id);
+                                    @endphp
+                                    <tr>
+                                        <td colspan="6"><hr></td>
+                                    </tr>  
+                                    <tr>
+                                        <td>Subtotal</td>
+                                        <td colspan="5" style="text-align:right">Php {{number_format($subtotal,2)}}</td>
+                                    </tr>
+
+                                    @if($h->discount_amount > 0)
+                                    <tr>
+                                        <td>Coupon Discount</td>
+                                        <td colspan="5" style="text-align:right">Php {{number_format($h->discount_amount,2)}}</td>
+                                    </tr>
+                                    @endif
+
+                                    <tr>
+                                        <td>Delivery Fee</td>
+                                        <td colspan="5" style="text-align:right">Php {{number_format($h->delivery_fee_amount,2)}}</td>
+                                    </tr>    
+
+                                    @if($delivery_discount > 0)
+                                    <tr>
+                                        <td>Delivery Discount</td>
+                                        <td colspan="5" style="text-align:right">Php {{number_format($delivery_discount,2)}}</td>
+                                    </tr>
+                                    @endif  
+
+                                    <tr style="font-weight:bold;">
+                                        <td>Total</td>
+                                        <td colspan="5" style="text-align:right">Php {{number_format(($subtotal-$h->discount_amount)+($h->delivery_fee_amount-$delivery_discount),2)}}</td>
+                                    </tr>         
+                                </table>
                             </td>
                             <td class="expander">
                             </td>

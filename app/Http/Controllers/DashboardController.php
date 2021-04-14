@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
-use \App\Logs;
+use \App\ActivityLog;
 
 class DashboardController extends Controller
 {
@@ -15,7 +15,7 @@ class DashboardController extends Controller
     		return back()->with('error','Restricted access');
     	}
 
-        $logs = Logs::where('created_by',Auth::id())->orderBy('id','desc')->paginate(15);
+    	$logs = ActivityLog::where('log_by', auth()->id())->orderBy('id','desc')->paginate(15);
 
         return view('admin.dashboard.index',compact('logs'));
     }

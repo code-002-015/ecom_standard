@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\EcommerceControllers;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Validator;
-use App\Helpers\ListingHelper;
+use Facades\App\Helpers\ListingHelper;
 
 
 use App\EcommerceModel\Coupon;
@@ -27,12 +28,10 @@ class CouponController extends Controller
      */
     public function index()
     {
-        $listing = new ListingHelper('desc', 10, 'updated_at');
-
-        $coupons = $listing->simple_search(Coupon::class, $this->searchFields);
+        $coupons = ListingHelper::simple_search(Coupon::class, $this->searchFields);
 
         // Simple search init data
-        $filter = $listing->get_filter($this->searchFields);
+        $filter = ListingHelper::get_filter($this->searchFields);
         $searchType = 'simple_search';
 
         return view('admin.coupon.index',compact('coupons', 'filter', 'searchType'));

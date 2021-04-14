@@ -30,7 +30,6 @@ Route::get('/albums/preview', 'FrontController@test')->name('albums.preview');
 
 //Product Frontend
 Route::any('/shop', 'Product\Front\ProductFrontController@list')->name('product.front.list');
-//Route::post('/shop', 'Product\Front\ProductFrontController@list_search')->name('product.front.list_post');
 Route::get('/products/{slug}', 'Product\Front\ProductFrontController@show')->name('product.front.show');
 
 //Cart

@@ -2,23 +2,29 @@
 
 namespace App\Http\Controllers\Settings;
 
-use App\Helpers\ListingHelper;
-use App\Http\Requests\UserRequest;
-use App\Mail\AddNewUserMail;
-use App\Permission;
-use Illuminate\Support\Facades\Input;
-use App\Http\Controllers\Controller;
-use App\Helpers\Webfocus\Setting;
-use Illuminate\Http\Request;
 use App\Http\Requests;
-use Auth;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Illuminate\Support\Facades\Validator;
+
+use Facades\App\Helpers\ListingHelper;
+use App\Helpers\Webfocus\Setting;
+
+use Illuminate\Support\Facades\Input;
+use App\Http\Requests\UserRequest;
 
 use App\Mail\UpdatePasswordMail;
+use App\Mail\AddNewUserMail;
+
+use App\Permission;
 use App\Role;
 use App\User;
 use App\Logs;
-use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
-use Illuminate\Support\Facades\Validator;
+
+use Auth;
+
 
 class UserController extends Controller
 {
@@ -31,7 +37,7 @@ class UserController extends Controller
         Permission::module_init($this, 'user');
     }
 
-    public function index($param = null)
+    public function index()
     {
         $customConditions = [
             [
@@ -48,8 +54,8 @@ class UserController extends Controller
             ]
         ];
 
-        $listing = new ListingHelper('desc', 10, 'updated_at', $customConditions);
-
+        $listing = ListingHelper::required_condition('is_active', '=', 1);
+        $listing->required_condition('role_id','<>',6);
         $users = $listing->simple_search(User::class, $this->searchFields);
 
         // Simple search init data

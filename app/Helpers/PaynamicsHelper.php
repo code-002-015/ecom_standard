@@ -12,7 +12,7 @@ use Auth;
 class PaynamicsHelper
 {
 
-    public static function payNow($requestId, $member, $cart, $totalAmount, $url, $withMembershipFee = false, $deliveryFee = 0)
+    public static function payNow($requestId, $member, $cart, $totalAmount, $url, $withMembershipFee = false, $deliveryFee = 0, $total_discount)
     {
         $merchant = Setting::paynamics_merchant();
         $allowed_payments = strtoupper(Setting::info()->accepted_payments);        
@@ -26,57 +26,10 @@ class PaynamicsHelper
             $price = number_format($product->product->discountedprice, 2, '.', '');
             $pqty = (int)$product->qty;
             $itemXml = $itemXml . "<Items><itemname>{$product->product->name}</itemname><quantity>{$pqty}</quantity><amount>{$price}</amount></Items>";
-
-
-
-            $couponCart = CouponCart::where('customer_id',Auth::id())->where('product_id',$product->product_id);;
-
-            if($couponCart->count()){
-                $remainingQty = $product->qty-$couponCart->count();
-
-                $productsub = $product->product->discountedprice*$couponCart->count();
-
-                $product_subtotal += $product->product->discountedprice*$remainingQty;
-                // get total product discount amount
-                $coupon = $couponCart->first();
-
-                if(isset($coupon->details->amount)){
-                    $product_total_discount += $coupon->details->amount*$couponCart->count();
-                    $product_subtotal += $productsub-($coupon->details->amount*$couponCart->count());
-                }   
-
-                if(isset($coupon->details->percentage)){
-                    $percent = $coupon->details->percentage/100;
-                    $discount = ($product->product->discountedprice*$percent)*$couponCart->count();
-                    
-                    $product_total_discount += $discount;
-                    $product_subtotal += $productsub-$discount;
-                }
-            } else {
-                $product_subtotal += $product->product->discountedprice*$product->qty;
-            }
-        }
-        // get total amount discount
-        $totalAmountCoupons = CouponCart::where('customer_id',Auth::id())->whereNull('product_id')->get();
-        foreach($totalAmountCoupons as $c){
-            $coupon = Coupon::find($c->coupon_id);
-            if($coupon->amount_discount_type == 1){
-
-                if(isset($coupon->amount)){
-                    $product_total_discount += $coupon->amount;
-                }
-
-                if(isset($coupon->percentage)){
-                    $percent = $coupon->percentage/100;
-                    $discount = number_format($product_subtotal*$percent,2,'.','');
-
-                    $product_total_discount += $discount;
-                }
-            }
         }
 
-        if($product_total_discount > 0){
-            $itemXml = $itemXml . "<Items><itemname>Order Discount</itemname><quantity>1</quantity><amount>-{$product_total_discount}</amount></Items>";    
+        if($total_discount > 0){
+            $itemXml = $itemXml . "<Items><itemname>Order Discount</itemname><quantity>1</quantity><amount>-{$total_discount}</amount></Items>";    
         }
 
 
@@ -94,8 +47,7 @@ class PaynamicsHelper
                     $sfDiscount = $deliveryFee;
                 }
                 $totalSfDiscount += $sfDiscount;
-            }
-            
+            }  
         }
 
         if ($deliveryFee > 0) {

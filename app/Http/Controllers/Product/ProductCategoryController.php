@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Product;
 
-use App\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
-use App\Helpers\ListingHelper;
+
+use Facades\App\Helpers\ListingHelper;
+
+use App\EcommerceModel\ProductCategory;
+use App\Permission;
+use App\Page;
+
 use \Carbon\Carbon;
 use Auth;
-use App\EcommerceModel\ProductCategory;
-use App\Page;
 
 class ProductCategoryController extends Controller
 {
@@ -26,23 +29,13 @@ class ProductCategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($param = null)
+    public function index()
     {
-        $customConditions = [
-            [
-                'field' => 'id',
-                'operator' => '<>',
-                'value' => 87,
-                'apply_to_deleted_data' => false
-            ]
-        ];
-
-        $listing = new ListingHelper('desc', 10, 'updated_at', $customConditions);
-
+        $listing = ListingHelper::required_condition('id', '<>', 87);
         $categories = $listing->simple_search(ProductCategory::class, $this->searchFields);
 
         // Simple search init data
-        $filter = $listing->get_filter($this->searchFields);
+        $filter = ListingHelper::get_filter($this->searchFields);
         $searchType = 'simple_search';
 
         return view('admin.products.category_index',compact('categories', 'filter', 'searchType'));

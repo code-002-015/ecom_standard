@@ -11,6 +11,8 @@ use Carbon\Carbon;
 use App\EcommerceModel\Product;
 use App\EcommerceModel\CouponSale;
 
+use App\ActivityLog;
+
 
 class Coupon extends Model
 {
@@ -117,22 +119,128 @@ class Coupon extends Model
         return $coupons;
     }
     
-    // public static function purchaseWithinDateRange()
-    // {
-    //     // $coupons = 
-    //     //     Coupon::whereNotIn('id',function($query){
-    //     //         $query->select('coupon_id')->from('customer_coupons')->where('customer_id',Auth::id());
-    //     //     })->where('status','ACTIVE')
-    //     //     ->where('end_date','>=',Carbon::today()->format('Y-m-d'))->where('end_time','>=',Carbon::now()->format('H:i'))->get();
-    //     $coupons = 
-    //         Coupon::where('status','ACTIVE')
-    //         ->where('activation_type','auto')
-    //         ->where('purchase_combination_counter',1)
-    //         ->where(function ($orWhereQuery){
-    //             $orWhereQuery->orwhere('event_date',Carbon::today()->format('Y-m-d'))
-    //             ->orwhere('end_date','>=',Carbon::today()->format('Y-m-d'))->where('end_time','>=',Carbon::now()->format('H:i'));
-    //         })->get();
+    
 
-    //     return $coupons;
-    // }
+
+
+
+
+
+
+    // ******** AUDIT LOG ******** //
+    // Need to change every model
+    static $oldModel;
+    static $tableTitle = 'coupon';
+    static $name = 'name';
+    static $unrelatedFields = ['id', 'coupon_code', 'scope_customer_id', 'free_product_id', 'repeat_annually', 'amount_discount_type', 'purchase_qty_type', 'purchase_combination_counter', 'purchase_combination', 'activity_type', 'usage_limit', 'usage_limit_no', 'availability', 'product_discount', 'discount_product_id', 'created_at', 'updated_at', 'deleted_at'];
+    static $logName = [
+        'name' => 'name',
+        'description' => 'description',
+        'terms_and_conditions' => 'terms and conditions',
+        'activation_type' => 'activation type',
+        'customer_scope' => 'customer scope',
+        'location' => 'location',
+        'location_discount_type' => 'shipping fee discount',
+        'location_discount_amount' => 'shipping fee discount amount',
+        'amount' => 'amount',
+        'percentage' => 'percentage',
+        'status' => 'status',
+        'start_date' => 'start date',
+        'end_date' => 'end date',
+        'start_time' => 'start time',
+        'end_time' => 'end time',
+        'event_name' => 'event name',
+        'event_date' => 'event date',
+        'purchase_product_id' => 'purchase products',
+        'purchase_product_cat_id' => 'purchase product categories',
+        'purchase_product_brand' => 'purchase product brands',
+        'purchase_amount' => 'purchase amount',
+        'purchase_amount_type' => 'amount type',
+        'purchase_qty' => 'purchase qty',
+        'customer_limit' => 'customer limit',
+        'combination' => 'coupon combination'
+
+
+    ];
+    // END Need to change every model
+
+    public static function boot()
+    {
+        parent::boot();
+
+        self::created(function($model) {
+            $name = $model[self::$name];
+
+            ActivityLog::create([
+                'log_by' => auth()->id(),
+                'activity_type' => 'insert',
+                'dashboard_activity' => 'created a new '. self::$tableTitle,
+                'activity_desc' => 'created the '. self::$tableTitle .' '. $name,
+                'activity_date' => date("Y-m-d H:i:s"),
+                'db_table' => $model->getTable(),
+                'old_value' => '',
+                'new_value' => $name,
+                'reference' => $model->id
+            ]);
+        });
+
+        self::updating(function($model) {
+            self::$oldModel = $model->fresh();
+        });
+
+        self::updated(function($model) {
+            $name = $model[self::$name];
+            $oldModel = self::$oldModel->toArray();
+            foreach ($oldModel as $fieldName => $value) {
+                if (in_array($fieldName, self::$unrelatedFields)) {
+                    continue;
+                }
+
+                $oldValue = $model[$fieldName];
+                if ($oldValue != $value) {
+                    ActivityLog::create([
+                        'log_by' => auth()->id(),
+                        'activity_type' => 'update',
+                        'dashboard_activity' => 'updated the '. self::$tableTitle .' '. self::$logName[$fieldName],
+                        'activity_desc' => 'updated the '. self::$tableTitle .' '. self::$logName[$fieldName] .' of '. $name .' from '. $oldValue .' to '. $value,
+                        'activity_date' => date("Y-m-d H:i:s"),
+                        'db_table' => $model->getTable(),
+                        'old_value' => $oldValue,
+                        'new_value' => $value,
+                        'reference' => $model->id
+                    ]);
+                }
+            }
+        });
+
+        self::deleted(function($model){
+            $name = $model[self::$name];
+            ActivityLog::create([
+                'log_by' => auth()->id(),
+                'activity_type' => 'delete',
+                'dashboard_activity' => 'deleted a '. self::$tableTitle,
+                'activity_desc' => 'deleted the '. self::$tableTitle .' '. $name,
+                'activity_date' => date("Y-m-d H:i:s"),
+                'db_table' => $model->getTable(),
+                'old_value' => '',
+                'new_value' => '',
+                'reference' => $model->id
+            ]);
+        });
+
+        // self::restored(function($model){
+        //     $name = $model[self::$name];
+        //     ActivityLog::create([
+        //         'log_by' => auth()->id(),
+        //         'activity_type' => 'restore',
+        //         'dashboard_activity' => 'restore a '. self::$tableTitle,
+        //         'activity_desc' => 'restore the '. self::$tableTitle .' '. $name,
+        //         'activity_date' => date("Y-m-d H:i:s"),
+        //         'db_table' => $model->getTable(),
+        //         'old_value' => '',
+        //         'new_value' => '',
+        //         'reference' => $model->id
+        //     ]);
+        // });
+    }
 }

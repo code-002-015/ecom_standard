@@ -60,7 +60,7 @@
                             </li>
                             <hr>
                             <label class="tx-sans tx-uppercase tx-10 tx-medium tx-spacing-1 tx-color-03">Payment Details</label>
-                            @php($num = 1)
+                            @php $num = 1; @endphp
                             @forelse($salesPayments as $payment)
 
                             <li class="d-flex justify-content-between">
@@ -101,13 +101,21 @@
                             </tr>
                             </thead>
                             <tbody>
+                            @php $gross = 0; $discount = 0; $subtotal = 0; @endphp
                             @forelse($salesDetails as $details)
+                            
+                            @php
+                                $discount = \App\EcommerceModel\CouponSale::total_product_discount($sales->id,$details->product_id,$details->qty,$details->price);
+                                $product_subtotal = $details->price*$details->qty;
+
+                                $subtotal += $product_subtotal;
+                            @endphp
                             <tr>
                                 <td class="tx-nowrap">{{$details->product->code}}</td>
                                 <td class="tx-nowrap">{{$details->product_name}}</td>
                                 <td class="tx-center">{{number_format($details->qty, 0)}}</td>
                                 <td class="tx-right">{{number_format($details->price, 2)}}</td>
-                                <td class="tx-right">{{number_format($details->gross_amount, 2)}}</td>
+                                <td class="tx-right">{{number_format($product_subtotal, 2)}}</td>
                                
                             </tr>
                             @empty
@@ -148,7 +156,7 @@
                     <div class="offset-lg-2 col-lg-4 order-1 order-sm-0 mg-b-30">
                         <label class="tx-sans tx-uppercase tx-10 tx-medium tx-spacing-1 tx-color-03">Payment Breakdown</label>
                         <ul class="list-unstyled lh-7 pd-r-10">
-                            @php($num = 1)
+                            @php $num = 1; @endphp
                             @forelse($salesPayments as $payment)
                             <li class="d-flex justify-content-between">
                                 <span>@if($num == 1) {{$num++}}st @elseif($num == 2) {{$num++}}nd @else {{$num++}}rd @endif Payment</span>
@@ -156,33 +164,48 @@
                             </li>
                             @empty
                             @endforelse
+
+                            @php
+                                $delivery_discount = \App\EcommerceModel\CouponSale::total_discount_delivery($sales->id);
+                                $net_amount = ($subtotal-$sales->discount_amount)+($sales->delivery_fee_amount-$delivery_discount);
+                            @endphp
                             <hr>
                             <li class="d-flex justify-content-between">
-                                <span>Gross</span>
-                                <span>{{number_format(($sales->gross_amount - $sales->delivery_fee_amount), 2)}}</span>
-                            </li>  
+                                <span>Sub Total</span>
+                                <span>{{number_format($subtotal, 2)}}</span>
+                            </li>
+
+                            @if($sales->discount_amount > 0)
+                            <li class="d-flex justify-content-between">
+                                <span>Coupon Discount</span>
+                                <span>{{number_format($sales->discount_amount, 2)}}</span>
+                            </li>
+                            @endif
+
                             <li class="d-flex justify-content-between">
                                 <span>Delivery Fee</span>
                                 <span>{{number_format($sales->delivery_fee_amount, 2)}}</span>
-                            </li>                          
-                            <li class="d-flex justify-content-between">
-                                <span>Discount</span>
-                                <span>{{number_format($sales->discount_amount, 2)}}</span>
                             </li>
+
+                            @if($delivery_discount > 0)
+                            <li class="d-flex justify-content-between">
+                                <span>Delivery Discount</span>
+                                <span>{{number_format($delivery_discount, 2)}}</span>
+                            </li>
+                            @endif
+
                             <li class="d-flex justify-content-between">
                                 <strong>Net Amount</strong>
-                                <strong>{{ number_format($sales->net_amount, 2) }}</strong>
+                                <strong>{{ number_format($net_amount, 2) }}</strong>
                             </li>
                         </ul>
                     </div>
-
                 </div>
                 <!-- row -->
             </div>
             <!-- container -->
         </div>
 
-{{--    --}}
         <div class="modal effect-scale" id="prompt-cancel-product" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">

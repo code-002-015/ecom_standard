@@ -20,6 +20,7 @@ class CreateAlbumsTable extends Migration
             $table->integer('transition_out')->default(2);
             $table->integer('transition')->default(6);
             $table->string('type', 150)->default('sub_banner');
+            $table->string('banner_type')->default('image');
             $table->integer('user_id')->default(1);
             $table->timestamps();
             $table->softDeletes();
