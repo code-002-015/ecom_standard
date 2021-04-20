@@ -30,7 +30,7 @@ class SalesController extends Controller
     public function index()
     {
 
-        $listing = ListingHelper::sort_by('order_number')
+        $listing = ListingHelper::sort_by('order_number');
         $listing->required_condition('status', '=', 'active');
 
         //$sales = $listing->simple_search(SalesHeader::class, $this->searchFields);
